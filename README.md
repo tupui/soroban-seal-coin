@@ -60,10 +60,7 @@ I am using a Raspberry Pi Zero 2 W. BOM:
 See `iot/seal_coin_supply.py` for details on which GPIO to connect, it's very
 straightforward:
 
-- The button is to reset the counter/flow history.
-- The green LED indicates that we can pump.
-- The RGB LED is getting brighter as we pump.
-- The red LED blinks when the contract is being invoked.
+- ...
 
 ![Raspberry Pi diagram](doc/diagram.png)
 

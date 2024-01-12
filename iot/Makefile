@@ -6,10 +6,6 @@ ifndef CONTRACT_HASH
    override CONTRACT_HASH = "..."
 endif
 
-ifndef ISSUER_ADDR_SECRET
-   override ISSUER_ADDR_SECRET = ...
-endif
-
 # Add help text after each target name starting with '\#\#'
 help:   ## show this help
 	@echo -e "Help for this makefile\n"
@@ -22,6 +18,6 @@ install:  ## install Python dependencies
 	source venv/bin/activate
 	pip install .
 
-run:
+run:  ## run the supply controller script
 	source venv/bin/activate && \
-	CONTRACT_HASH=$(CONTRACT_HASH) ISSUER_ADDR_SECRET=$(ISSUER_ADDR_SECRET) python seal_coin_supply.py
+	CONTRACT_HASH=$(CONTRACT_HASH) python seal_coin_supply.py
