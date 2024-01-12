@@ -1,0 +1,6 @@
+contract/target
+
+.idea
+.DS_Store
+
+*.pyc
