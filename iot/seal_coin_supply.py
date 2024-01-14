@@ -1,6 +1,9 @@
 import os
+import math
 from signal import pause
+import statistics
 import time
+from typing import Literal
 
 from gpiozero import Button, DistanceSensor, LED, Motor
 
@@ -15,34 +18,57 @@ if CONTRACT_HASH is None or ISSUER_ADDR_SECRET is None or DISTRIBUTION_ADDR_SECR
         "Missing environment variables CONTRACT_HASH or ISSUER_ADDR_SECRET or DISTRIBUTION_ADDR_SECRET"
     )
 
+# 1_000_000_000 SEAL = 0.1 l
+TOKEN_VOL = 1e-10
+
 # hardware setup
 mint_button = Button(2)
 burn_button = Button(26)
+MINT_AMOUNT = 100_000_000
+BURN_AMOUNT = 100_000_000
 
 burn_led = LED(5)  # Red
 mint_led = LED(6)  # Blue
 
-motor = Motor(forward=4, backward=14)
+pump = Motor(forward=4, backward=14)
+FLOW_RATE = 0.1  # l/s
 d_sensor = DistanceSensor(23, 24)
+SURFACE_CONTAINER = math.pi*0.01**2  # m^2
 
 
-def mint_token(n_token):
-    mint_led.blink(on_time=0.25, off_time=0.25, n=4*5)
-    speed = ...
-    motor.forward()
+def token_control(n_token, operation: Literal["mint", "burn"]) -> None:
+    if operation == "mint":
+        led = mint_led
+        pump_run = pump.forward
+    else:
+        led = burn_led
+        pump_run = pump.backward
+
+    vol = n_token * TOKEN_VOL  # l
+    pump_time = vol / FLOW_RATE  # s
+
+    led.blink(on_time=0.25, off_time=0.25, n=2*max(2, int(pump_time)))
+    pump_run(1)
+    time.sleep(pump_time)
+    pump.stop()
 
 
-def burn_token(n_token):
-    burn_led.blink(on_time=0.25, off_time=0.25, n=4*5)
-    speed = ...
-    motor.backward()
+def supply_check() -> int:
+    dists = []
+    for _ in range(100):
+        dists.append(d_sensor.distance)
+        time.sleep(0.01)
+    dist = statistics.median(dists)  # m
+    vol = SURFACE_CONTAINER * dist  # m^3
+    n_token = math.floor(vol / TOKEN_VOL)
+    return n_token
 
 
-def supply_check():
-    dist = d_sensor.distance
+mint_button.when_activated = lambda x: token_control(n_token=MINT_AMOUNT, operation="mint")
+burn_button.when_activated = lambda x: token_control(n_token=BURN_AMOUNT, operation="burn")
 
 
-while "Supply control":
+while "Oracle":
     time.sleep(1)
 
     if ...:
