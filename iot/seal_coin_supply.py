@@ -36,7 +36,16 @@ d_sensor = DistanceSensor(23, 24)
 SURFACE_CONTAINER = math.pi*0.01**2  # m^2
 
 
-def token_control(n_token, operation: Literal["mint", "burn"]) -> None:
+def token_control(n_token: int, operation: Literal["mint", "burn"]) -> None:
+    """Mint or burn `n_token` by pumping in/out.
+
+    Parameters
+    ----------
+    n_token : int
+        Number of token.
+    operation : {"mint", "burn"}
+        Mint or burn token.
+    """
     if operation == "mint":
         led = mint_led
         pump_run = pump.forward
@@ -54,6 +63,7 @@ def token_control(n_token, operation: Literal["mint", "burn"]) -> None:
 
 
 def supply_check() -> int:
+    """Proof of reserve by checking the liquid level."""
     dists = []
     for _ in range(100):
         dists.append(d_sensor.distance)
@@ -64,6 +74,7 @@ def supply_check() -> int:
     return n_token
 
 
+# Special Mint and Burn event
 mint_button.when_activated = lambda x: token_control(n_token=MINT_AMOUNT, operation="mint")
 burn_button.when_activated = lambda x: token_control(n_token=BURN_AMOUNT, operation="burn")
 
