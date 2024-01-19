@@ -51,10 +51,12 @@ through the IOT part first, and then we will cover the contract.
 I am using a Raspberry Pi Zero 2 W. BOM:
 
 - Raspberry Pi Zero 2 W
-- Ultrasonic sensor HC-SR04
-- Peristaltic pump 12V DC
+- Button (+1x 220 ohm resistance)
+- BLUE LED (+1x 220 ohm resistance)
+- RED LED (+1x 220 ohm resistance)
+- Ultrasonic sensor HC-SR04 (+1x 220 and +1x 330 ohm resistances: 5V to 3V on the GPIO)
+- Peristaltic pump 12V DC (+ 12V DC power supply)
 - Adafruit TB6612 1.2A DC/Stepper Motor Driver Breakout Board
-- 12V DC power supply
 - E-Paper HAT 2.13" 250x122
 
 Fluid level:
@@ -82,9 +84,10 @@ python -m venv venv
 source venv/bin/activate
 pip install .
 # And some variables needed to run the Soroban contract:
-# Hash of the contract and address of the player/claimant
-export CONTRACT_HASH_PUMPIT=...
-export CLAIMANT_ADDR_SECRET_PUMPIT=...
+# Hash of the contract and addresses of the issuing and distribution accounts
+export CONTRACT_HASH=...
+export ISSUER_ADDR_SECRET=...
+export DISTRIBUTION_ADDR_SECRET=...
 ```
 
 To run the client (provided the contract is initialized, see bellow):
@@ -97,8 +100,7 @@ Behind the scene, ...
 
 ## Soroban - Stellar Smart Contract
 
-We define a Smart Contract that hold a claimable balance. When conditions are
-met, the balance is transferred to a claimant.
+We define a Smart Contract that ...
 
 *Note: all commands are listed in a convenient Makefile in the contract folder.*
 
@@ -141,3 +143,8 @@ soroban config identity fund grogu --network testnet
 soroban config identity fund mando --network testnet
 mkdir -p .soroban
 ```
+
+### Creation of Seal Coin
+
+...
+
