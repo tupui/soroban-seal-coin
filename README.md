@@ -57,6 +57,13 @@ I am using a Raspberry Pi Zero 2 W. BOM:
 - 12V DC power supply
 - E-Paper HAT 2.13" 250x122
 
+Fluid level:
+https://new.abb.com/products/measurement-products/level/a-dozen-ways-to-measure-fluid-level
+Some common options for RPi:
+https://www.seeedstudio.com/blog/2019/12/23/distance-sensors-types-and-selection-guide/
+Other option with ToF sensor, e.g. VL53L1X or VL6180X
+
+
 See `iot/seal_coin_supply.py` for details on which GPIO to connect, it's very
 straightforward:
 

@@ -31,7 +31,7 @@ burn_led = LED(5)  # Red
 mint_led = LED(6)  # Blue
 
 pump = Motor(forward=4, backward=14)
-FLOW_RATE = 0.1  # l/s
+FLOW_RATE = 0.0015  # l/s
 d_sensor = DistanceSensor(23, 24)
 SURFACE_CONTAINER = math.pi*0.01**2  # m^2
 
@@ -82,7 +82,20 @@ burn_button.when_activated = lambda x: token_control(n_token=BURN_AMOUNT, operat
 while "Oracle":
     time.sleep(1)
 
-    if ...:
+    #print("-----------------")
+
+    print(f"Supply: {supply_check()}")
+    # print("Minting")
+    # token_control(MINT_AMOUNT, "mint")
+    #
+    # print(f"Supply: {supply_check()}")
+    #
+    # print("Burning hot")
+    # token_control(BURN_AMOUNT, "burn")
+    #
+    # print(f"Supply: {supply_check()}")
+
+    if False:
 
         print("Calling Soroban smart contract")
         result = soroban_invoke(
