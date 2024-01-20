@@ -13,7 +13,6 @@
 mod historical_data;
 use soroban_sdk::{contract, contractimpl, contracttype, token, Address, BytesN, Env};
 
-
 #[derive(Clone)]
 #[contracttype]
 pub enum DataKey {
@@ -26,6 +25,7 @@ pub enum DataKey {
 #[contracttype]
 pub struct SealData {
     pub sea_ice_extent: u32,
+    pub doy: u32,
 }
 
 #[contract]
@@ -55,9 +55,13 @@ impl SealCoinContract {
         }
 
         // Store Seal Coin parameters
-        env.storage()
-            .instance()
-            .set(&DataKey::SealData, &SealData { sea_ice_extent });
+        env.storage().instance().set(
+            &DataKey::SealData,
+            &SealData {
+                sea_ice_extent,
+                doy,
+            },
+        );
 
         // Adjust supply level with given amount
         correct_supply(env, issuer, distributor, doy, sea_ice_extent);
