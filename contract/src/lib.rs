@@ -10,21 +10,22 @@
 
 #![no_std]
 
-use soroban_sdk::{contract, contractimpl, contracttype, token, Address, BytesN, Env, Vec};
+mod historical_data;
+use soroban_sdk::{contract, contractimpl, contracttype, token, Address, BytesN, Env};
 
 
 #[derive(Clone)]
 #[contracttype]
 pub enum DataKey {
-    Admin,  // Contract administrator
-    Token,  // Seal Coin address
-    SealData,  // Hold the Seal information
+    Admin,    // Contract administrator
+    Token,    // Seal Coin address
+    SealData, // Hold the Seal information
 }
 
 #[derive(Clone)]
 #[contracttype]
 pub struct SealData {
-    pub sea_ice_extent: u16,
+    pub sea_ice_extent: u32,
 }
 
 #[contract]
@@ -43,29 +44,22 @@ impl SealCoinContract {
 
     /// Update the sea_ice_extent value on-chain
     pub fn update_sea_ice_extent(
-        env: Env, issuer: Address, distributor: Address,
-        sea_ice_extent: u16, amount: i128
+        env: Env,
+        issuer: Address,
+        distributor: Address,
+        sea_ice_extent: u32,
     ) {
         if !is_initialized(&env) {
             panic!("contract has not been initialized");
         }
 
         // Store Seal Coin parameters
-        env.storage().instance().set(
-            &DataKey::SealData,
-            &SealData {
-                sea_ice_extent,
-            },
-        );
+        env.storage()
+            .instance()
+            .set(&DataKey::SealData, &SealData { sea_ice_extent });
 
         // Adjust supply level with given amount
-
-        // TODO infer amount from extent parameter:
-        // 0. Check if extent was updated today
-        // 1. Get historical extent for current day
-        // 2. Compare today's extent with historical value
-        // 3. Convert delta into token amount (can add some factor)
-        correct_supply(&env, &issuer, &distributor, &amount);
+        correct_supply(env, issuer, distributor, sea_ice_extent);
     }
 
     /// Reset the contract by deleting the token and coin data.
@@ -88,22 +82,28 @@ impl SealCoinContract {
 // Helper functions
 
 fn is_initialized(env: &Env) -> bool {
-    env.storage().instance().has(&DataKey::Admin) &&
-    env.storage().instance().has(&DataKey::Token)
+    env.storage().instance().has(&DataKey::Admin) && env.storage().instance().has(&DataKey::Token)
 }
 
-fn correct_supply(env: Env, issuer: Address, distributor: Address, amount: &i128) {
+fn correct_supply(env: Env, issuer: Address, distributor: Address, sea_ice_extent: u32) {
     if !is_initialized(&env) {
         panic!("contract has not been initialized");
     }
     issuer.require_auth();
     distributor.require_auth();
 
-    client = token::Client::new(&env, &token);
+    let token = env.storage().instance().get(&DataKey::Token).unwrap();
+    let client = token::Client::new(&env, &token);
 
-    if  amount > 0 {
-        client.transfer(&issuer, &distributor, &amount);
+    // let ledger_timestamp = env.ledger().timestamp();
+    // let doy = ...;
+    let doy = 1;
+    let amount: i128 = (sea_ice_extent - historical_data::MEDIAN_EXTENT[doy]).into();
+
+    if amount > 0 {
+        client.transfer(&issuer, &distributor, &amount)
     } else if amount < 0 {
-        client.burn(&distributor, &amount.abs());
-    } else { }
+        client.burn(&distributor, &amount.abs())
+    } else {
+    }
 }
