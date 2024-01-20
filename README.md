@@ -1,4 +1,4 @@
-# Seal Coin
+# Seal Coin (SEAL)
 
 <table align="center" border="0">
 <tr>
@@ -8,7 +8,8 @@
 </table>
 
 The goal of this project is to explore with IOT and
-[Soroban](https://soroban.stellar.org) - Stellar Smart Contract.
+[Soroban](https://soroban.stellar.org) - Stellar Smart Contract, by creating a token with additional
+features.
 
 [Stellar](https://stellar.org) is one of the most used blockchain technology.
 It offers concrete real world applications such as ease of cross border
@@ -20,17 +21,49 @@ ecosystem, these are called *Soroban contracts*.
 
 ### Seal
 
+These beautiful creatures are sadly endangered. One of their main threat is
+the melting of ice. Ice is paramount to their survival as they rely on it for
+breeding, forage for food or even hide from other predators like polar bears.
 
+### Sea Ice Extent
 
-
-### Sea Ice Index
-
+> The daily Sea Ice Index provides a quick look at Arctic-wide changes in
+sea ice. It provides consistently processed daily ice extent and concentration
+images and data since 1979. Daily extent images show ice extent at
+concentrations greater than 15% for a given day with an outline of the typical
+extent for that day based on a 30-year (1981-2010) median (orange line).
 https://nsidc.org/data/seaice_index
 https://nsidc.org/sites/default/files/g02135-v003-userguide_1_1.pdf
 
+We retrieve the daily ice extent in Arctic and compare it to the 30-year median
+of the day. This indicator is a sign of general increase of decline of the
+ice extent.
+
 ### Seal Coin
 
+Seal Coin (SEAL)'s goal is to raise awareness around the ice extent decline.
 
+1,000,000,000 SEAL are initially minted. The supply is directly linked to
+a volume of liquid stored in a container. Burning SEAL removes liquid,
+while minting SEAL add liquid to the container. The liquid is the token itself.
+
+Hence, fetching the current volume of liquid in the container constitute
+a proof-of-reserve.
+
+The supply is regulated via manual action and by
+following the ice extent in the Arctic. Once a day, the current ice extent is
+compared to the 30-years median ice extent of the day.
+If the extent augment, the supply increases. If the extent decreases,
+the supply decreases.
+
+The decrease or increase is caped at 500,000,000. Hence, at most there can
+be up to 1,500,000,000 SEAL and even if the ice extent goes to 0, the minimal
+supply will be 500,000,000 SEAL.
+
+The deflationary nature based on the bad outcome that the ice is melting is
+intended as 100,000,000 SEAL are reserved to support the outreach mission of
+the project. The worse the situation is, the more valuable SEAL will become and
+be needed.
 
 ## Project structure
 
@@ -51,7 +84,7 @@ through the IOT part first, and then we will cover the contract.
 I am using a Raspberry Pi Zero 2 W. BOM:
 
 - Raspberry Pi Zero 2 W
-- Button (+1x 220 ohm resistance)
+- Button (x2)
 - BLUE LED (+1x 220 ohm resistance)
 - RED LED (+1x 220 ohm resistance)
 - Ultrasonic sensor HC-SR04 (+1x 220 and +1x 330 ohm resistances: 5V to 3V on the GPIO)
@@ -59,17 +92,13 @@ I am using a Raspberry Pi Zero 2 W. BOM:
 - Adafruit TB6612 1.2A DC/Stepper Motor Driver Breakout Board
 - E-Paper HAT 2.13" 250x122
 
-Fluid level:
-https://new.abb.com/products/measurement-products/level/a-dozen-ways-to-measure-fluid-level
-Some common options for RPi:
-https://www.seeedstudio.com/blog/2019/12/23/distance-sensors-types-and-selection-guide/
-Other option with ToF sensor, e.g. VL53L1X or VL6180X
+_On
+[measuring](https://new.abb.com/products/measurement-products/level/a-dozen-ways-to-measure-fluid-level)
+fluid level.
+[Some](https://www.seeedstudio.com/blog/2019/12/23/distance-sensors-types-and-selection-guide/)
+common options for RPi. Other option with ToF sensor, e.g. VL53L1X or VL6180X_
 
-
-See `iot/seal_coin_supply.py` for details on which GPIO to connect, it's very
-straightforward:
-
-- ...
+See `iot/seal_coin_supply.py` for details on which GPIO to connect.
 
 ![Raspberry Pi diagram](doc/diagram.png)
 
@@ -96,7 +125,9 @@ To run the client (provided the contract is initialized, see bellow):
 python seal_coin_supply.py
 ```
 
-Behind the scene, ...
+Behind the scene, once a day, the ice extent is retrieved. Its value is
+used to adjust the supply. As the physical supply of the token is changed,
+a call to the Soroban contract is made to adjust the on-chain supply.
 
 ## Soroban - Stellar Smart Contract
 
@@ -146,5 +177,32 @@ mkdir -p .soroban
 
 ### Creation of Seal Coin
 
-...
+We follow the extensive
+[documentation](https://developers.stellar.org/docs/issuing-assets/how-to-issue-an-asset)
+to issue the new asset on the Stellar blockchain.
 
+At the end of the process, we have an issuing account and a distribution account,
+which hold the 1,000,000,000 Seal Coin (SEAL).
+
+# What's next!?
+
+This is a simple example, yet it showcase how a simple concept can be used in
+a somehow real application. There are a few nice-things we can do to play
+around the idea:
+
+- Use a hardware security module (e.g. Zymbit) so that we provide additional
+  guarantees about the off-chain setup.
+- Use a different liquid. Kerosene could be interesting as it's blue-ish and
+  if we burn token we can actually burn them for real.
+- Deal with liquid... Evaporation, etc.
+- Allow a decentralized supply. Nodes could replicate this setup and each would
+  share the supply. (Bring lots of other issues to prevent people to temper
+  with the off-chain data.)
+- Make an ICO system. We can mint tokens and sell them at a given price
+  prevent any sell/buy before certain conditions are met.
+- Use other metrics to regulate the supply.
+- Restrict operations depending on conditions. E.g. if the extent goes bellow
+  a specific value, disable trading.
+
+Feel free to raise any issues or even make PRs! Also, if you think we should
+launch that for real :wink:

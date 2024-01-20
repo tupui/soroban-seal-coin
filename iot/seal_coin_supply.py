@@ -13,10 +13,11 @@ CONTRACT_HASH = os.getenv("CONTRACT_HASH")
 ISSUER_ADDR_SECRET = os.getenv("ISSUER_ADDR_SECRET")
 DISTRIBUTION_ADDR_SECRET = os.getenv("DISTRIBUTION_ADDR_SECRET")
 
-if CONTRACT_HASH is None or ISSUER_ADDR_SECRET is None or DISTRIBUTION_ADDR_SECRET is None:
-    raise ValueError(
-        "Missing environment variables CONTRACT_HASH or ISSUER_ADDR_SECRET or DISTRIBUTION_ADDR_SECRET"
-    )
+# if CONTRACT_HASH is None or ISSUER_ADDR_SECRET is None or DISTRIBUTION_ADDR_SECRET is None:
+#     raise ValueError(
+#         "Missing environment variables CONTRACT_HASH or ISSUER_ADDR_SECRET"
+#         " or DISTRIBUTION_ADDR_SECRET"
+#     )
 
 # 1_000_000_000 SEAL = 0.1 l
 TOKEN_VOL = 1e-10
