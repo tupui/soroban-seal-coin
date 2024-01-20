@@ -49,7 +49,6 @@ impl SealCoinContract {
         if !is_initialized(&env) {
             panic!("contract has not been initialized");
         }
-        issuer.require_auth();
 
         // Store Seal Coin parameters
         env.storage().instance().set(
@@ -59,7 +58,13 @@ impl SealCoinContract {
             },
         );
 
-        // env: Env, issuer: Address, distributor: Address, amount: u16
+        // Adjust supply level with given amount
+
+        // TODO infer amount from extent parameter:
+        // 0. Check if extent was updated today
+        // 1. Get historical extent for current day
+        // 2. Compare today's extent with historical value
+        // 3. Convert delta into token amount (can add some factor)
         correct_supply(&env, &issuer, &distributor, &amount);
     }
 
