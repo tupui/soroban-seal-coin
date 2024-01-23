@@ -376,10 +376,10 @@ class EPD:
         self.send_data2([color] * int(self.height * linewidth))
         self.turn_on_display()
 
-    def sleep(self):
+    def sleep(self, cleanup=False):
         """Enter sleep mode."""
         self.send_command(0x10)  # enter deep sleep
         self.send_data(0x01)
 
         epdconfig.delay_ms(2000)
-        epdconfig.module_exit()
+        epdconfig.module_exit(cleanup=cleanup)
