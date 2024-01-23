@@ -1,4 +1,4 @@
-.PHONY: help install run
+.PHONY: help prepare install run
 .DEFAULT_GOAL := help
 SHELL:=/bin/bash
 
@@ -11,6 +11,11 @@ help:   ## show this help
 	@echo -e "Help for this makefile\n"
 	@echo "Possible commands are:"
 	@grep -h "##" $(MAKEFILE_LIST) | grep -v grep | sed -e 's/\(.*\):.*##\(.*\)/    \1: \2/'
+
+prepare:  # activate SPI interface for e-ink display
+	sudo raspi-config
+	# Choose Interfacing Options -> SPI -> Yes Enable SPI interface
+	# sudo reboot
 
 install:  ## install Python dependencies
 	# Python part
