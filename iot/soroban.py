@@ -17,10 +17,13 @@ network_passphrase = Network.TESTNET_NETWORK_PASSPHRASE
 
 
 def soroban_invoke(
-    secret_key: str, contract_id: str, function_name: str, args: list[SCVal],
+    secret_key: str,
+    contract_id: str,
+    function_name: str,
+    args: list[SCVal],
     *,
     preflight: bool = True,
-    timeout_count: int = 10
+    timeout_count: int = 10,
 ):
     address_kp = Keypair.from_secret(secret_key)
     address_source = soroban_server.load_account(address_kp.public_key)
@@ -47,7 +50,9 @@ def soroban_invoke(
 
     i = 0
     while i < timeout_count:
-        get_transaction_data = soroban_server.get_transaction(send_transaction_data.hash)
+        get_transaction_data = soroban_server.get_transaction(
+            send_transaction_data.hash
+        )
         if get_transaction_data.status != GetTransactionStatus.NOT_FOUND:
             break
         time.sleep(3)
@@ -59,7 +64,10 @@ def soroban_invoke(
         transaction_meta = stellar_xdr.TransactionMeta.from_xdr(
             get_transaction_data.result_meta_xdr
         )
-        if transaction_meta.v3.soroban_meta.return_value.type == stellar_xdr.SCValType.SCV_VOID:  # type: ignore[union-attr]
+        if (
+            transaction_meta.v3.soroban_meta.return_value.type
+            == stellar_xdr.SCValType.SCV_VOID
+        ):  # type: ignore[union-attr]
             return transaction_meta
     else:
         raise SdkError(f"Transaction failed: {get_transaction_data.result_xdr}")

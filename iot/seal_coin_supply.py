@@ -34,7 +34,7 @@ mint_led = LED(6)  # Blue
 pump = Motor(forward=4, backward=14)
 FLOW_RATE = 0.0015  # l/s
 d_sensor = DistanceSensor(23, 24)
-SURFACE_CONTAINER = math.pi*0.01**2  # m^2
+SURFACE_CONTAINER = math.pi * 0.01**2  # m^2
 
 
 def token_control(n_token: int, operation: Literal["mint", "burn"]) -> None:
@@ -57,7 +57,7 @@ def token_control(n_token: int, operation: Literal["mint", "burn"]) -> None:
     vol = n_token * TOKEN_VOL  # l
     pump_time = vol / FLOW_RATE  # s
 
-    led.blink(on_time=0.25, off_time=0.25, n=2*max(2, int(pump_time)))
+    led.blink(on_time=0.25, off_time=0.25, n=2 * max(2, int(pump_time)))
     pump_run(1)
     time.sleep(pump_time)
     pump.stop()
@@ -76,14 +76,18 @@ def supply_check() -> int:
 
 
 # Special Mint and Burn event
-mint_button.when_activated = lambda x: token_control(n_token=MINT_AMOUNT, operation="mint")
-burn_button.when_activated = lambda x: token_control(n_token=BURN_AMOUNT, operation="burn")
+mint_button.when_activated = lambda x: token_control(
+    n_token=MINT_AMOUNT, operation="mint"
+)
+burn_button.when_activated = lambda x: token_control(
+    n_token=BURN_AMOUNT, operation="burn"
+)
 
 
 while "Oracle":
     time.sleep(1)
 
-    #print("-----------------")
+    # print("-----------------")
 
     print(f"Supply: {supply_check()}")
     # print("Minting")
@@ -97,7 +101,6 @@ while "Oracle":
     # print(f"Supply: {supply_check()}")
 
     if False:
-
         print("Calling Soroban smart contract")
         result = soroban_invoke(
             secret_key=ISSUER_ADDR_SECRET,
