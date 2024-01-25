@@ -33,5 +33,4 @@ try:
 except KeyboardInterrupt:
     epd.init()
     epd.clear()
-    epd.sleep(cleanup=True)
-    epd2in13_V4.epdconfig.module_exit(cleanup=True)
+    epd.sleep(deep=True)
