@@ -32,7 +32,6 @@ LIABILITY WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-import atexit
 import sys
 
 if sys.platform == "darwin":
@@ -144,8 +143,9 @@ class EPD:
         self.width = 122
         self.height = 250
 
-        self.init()
-        self.clear()
+        # some magic as not working
+        # self.init()
+        # self.clear()
 
     def init(self):
         """Initialize the e-Paper register."""
@@ -178,8 +178,6 @@ class EPD:
         self._send_data(0x80)
 
         self._read_busy()
-
-        return 0
 
     def init_fast(self):
         """Initialize the e-Paper fast register."""
@@ -382,11 +380,3 @@ class EPD:
         self._send_command(0x4F)  # SET_RAM_Y_ADDRESS_COUNTER
         self._send_data(y & 0xFF)
         self._send_data((y >> 8) & 0xFF)
-
-
-@atexit.register
-def clean_epd():
-    logger.debug("Cleaning EPD before exiting...")
-    epd = EPD()
-    epd.clear()
-    epd.sleep(deep=True)
