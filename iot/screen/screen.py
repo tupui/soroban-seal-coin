@@ -1,4 +1,5 @@
 import logging
+import pathlib
 
 from PIL import Image, ImageDraw
 
@@ -6,31 +7,38 @@ import epd2in13_V4
 
 logging.basicConfig(level=logging.INFO)
 
-epd = epd2in13_V4.EPD()
 
-try:
-    epd.init()
-    epd.clear()
+class SealScreen:
+    def __init__(self):
+        self.epd = epd2in13_V4.EPD()
+        self._render_template()
 
-    image = Image.new("1", (epd.height, epd.width), 255)
+    def _render_template(self):
+        self.base_image = Image.new("1", (self.epd.height, self.epd.width), 255)
 
-    draw = ImageDraw.Draw(image)
-    draw.text((100, 60), "SEAL", fill=0)
+        self.draw = ImageDraw.Draw(self.base_image)
+        self.draw.text((100, 60), "SEAL", fill=0)
 
-    logo = Image.open("soroban.png")
-    logo.thumbnail((100, 100))
-    image.paste(logo, (5, 10))
+        fdir = pathlib.Path(__file__).parent
+        logo = Image.open(fdir / "soroban.png")
+        logo.thumbnail((100, 100))
+        self.base_image.paste(logo, (5, 10))
 
-    epd.display_part_base_image(epd.get_buffer(image))
+        self.epd.display_part_base_image(self.epd.get_buffer(self.base_image))
+        self.epd.sleep()  # deep?
 
-    epd.sleep()
-    epd.init()
-    draw.rectangle((120, 80, 220, 105), fill=255)
-    draw.text((120, 80), f"An update", fill=0)
-    epd.display_partial(epd.get_buffer(image))
-    epd.sleep()
+    def update_screen(self, seal_onchain, seal_offchain, ice_extent, delta):
+        # self.epd.init()
 
-except KeyboardInterrupt:
-    epd.init()
-    epd.clear()
-    epd.sleep(deep=True)
+        # blank fill update area
+        self.draw.rectangle(((150, 0), (250, 122)), fill=255)
+
+        self.draw.text((150, 80), f"Ice Extent: {ice_extent}", fill=0)
+        self.draw.text((150, 80), f"Delta: {delta}%", fill=0)
+
+        self.draw.text((150, 80), f"On-chain Supply: {seal_onchain}", fill=0)
+        self.draw.text((150, 90), f"Off-chain Supply: {seal_offchain}", fill=0)
+
+        # screen refresh
+        self.epd.display_partial(self.epd.get_buffer(self.base_image))
+        self.epd.sleep()
