@@ -80,8 +80,8 @@ def token_control(n_token: int, operation: Literal["mint", "burn"]) -> None:
     pump.stop()
 
 
-def supply_check() -> int:
-    """Proof of reserve by checking the liquid level."""
+def supply_offchain() -> int:
+    """Proof of reserve by checking the liquid level. Referred as off-chain."""
     dists = []
     for _ in range(100):
         dists.append(d_sensor.distance)
@@ -90,6 +90,22 @@ def supply_check() -> int:
     vol = SURFACE_CONTAINER * dist  # m^3
     n_token = math.floor(vol / LITER_PER_TOKEN)
     return n_token
+
+
+def supply_onchain() -> int:
+    """On-chain available supply."""
+    account = stellar_server.load_account(distribution_kp.public_key)
+    balances = account.raw_data["balances"]
+    seal_onchain = [
+        asset["balance"]
+        for asset in balances
+        if "asset_code" in asset and asset["asset_code"] == "SEAL"
+    ]
+    try:
+        seal_onchain = int(seal_onchain[0])
+    except IndexError:
+        seal_onchain = 0
+    return seal_onchain
 
 
 # Special Mint and Burn event
@@ -101,7 +117,7 @@ burn_button.when_activated = lambda x: token_control(
 )
 
 doy_last_executed = 0
-while "Oracle":
+while "SEAL management":
     print("-----------------")
     today_date = datetime.datetime.now(tz=datetime.timezone.utc)
     doy = today_date.timetuple().tm_yday
@@ -112,9 +128,9 @@ while "Oracle":
     extent_oracle = int(extent_oracle * 1000)
     delta = extent_oracle - sii.MEDIAN_EXTENT[doy - 1]
 
-    print(f"It's a beautiful day: {today_date.strftime("%Y-%m-%d")}")
-    curr_supply = supply_check()
-    print(f"Current supply: {curr_supply}")
+    print(f"It's a beautiful day: {today_date.strftime('%Y-%m-%d')}")
+    seal_offchain = supply_offchain()
+    print(f"Current supply: {seal_offchain}")
 
     print(f"DOY extent: {extent_oracle}")
 
@@ -126,8 +142,11 @@ while "Oracle":
         # -550 * 100 = -55k SEAL
         amount = int(delta * 100)
 
-        new_supply = curr_supply + amount
-        if not (TOKEN_GENESIS - TOKEN_VOLATILE < new_supply < TOKEN_GENESIS + TOKEN_VOLATILE):
+        new_supply = seal_offchain + amount
+        if not (
+            TOKEN_GENESIS - TOKEN_VOLATILE < new_supply < TOKEN_GENESIS + TOKEN_VOLATILE
+        ):
+            logging.warning(f"New supply would be too much or too little: {new_supply}")
             continue
 
         # only trigger if outside [-1000,1000]
@@ -138,8 +157,8 @@ while "Oracle":
             print("Ice is melting faster, poo Seals! Burning token")
             token_control(amount, "burn")
 
-        curr_supply = supply_check()
-        print(f"New supply: {curr_supply}")
+        seal_offchain = supply_offchain()
+        print(f"New supply: {seal_offchain}")
 
         # calling Soroban smart contract
         try:
@@ -169,23 +188,14 @@ while "Oracle":
             # mark as executed only if no error with Soroban
             doy_last_executed = doy
 
-    account = stellar_server.load_account(distribution_kp.public_key)
-    balances = account.raw_data["balances"]
-    seal_onchain = [
-        asset["balance"]
-        for asset in balances
-        if "asset_code" in asset and asset["asset_code"] == "SEAL"
-    ]
-    try:
-        seal_onchain = int(seal_onchain[0])
-    except IndexError:
-        seal_onchain = 0
+    seal_onchain = supply_onchain()
 
     epd = screen.SealScreen()
     epd.update_screen(
-        seal_onchain=seal_onchain, seal_offchain=curr_supply,
+        seal_onchain=seal_onchain,
+        seal_offchain=seal_offchain,
         ice_extent=extent_oracle,
-        delta=delta
+        delta=delta,
     )
 
     time.sleep(3600)

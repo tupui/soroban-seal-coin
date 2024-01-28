@@ -164,7 +164,7 @@ class EPD:
         self._send_command(0x11)  # data entry mode
         self._send_data(0x03)
 
-        self._set_window(0, 0, self.width-1, self.height-1)
+        self._set_window(0, 0, self.width - 1, self.height - 1)
         self._set_cursor(0, 0)
 
         self._send_command(0x3C)
@@ -193,7 +193,7 @@ class EPD:
         self._send_command(0x11)  # data entry mode
         self._send_data(0x03)
 
-        self._set_window(0, 0, self.width-1, self.height-1)
+        self._set_window(0, 0, self.width - 1, self.height - 1)
         self._set_cursor(0, 0)
 
         self._send_command(0x22)  # Load temperature value
@@ -257,7 +257,7 @@ class EPD:
         self._send_command(0x11)  # data entry mode
         self._send_data(0x03)
 
-        self._set_window(0, 0, self.width-1, self.height-1)
+        self._set_window(0, 0, self.width - 1, self.height - 1)
         self._set_cursor(0, 0)
 
         self._send_command(0x24)  # WRITE_RAM
