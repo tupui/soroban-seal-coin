@@ -39,6 +39,9 @@ We retrieve the daily ice extent in Arctic and compare it to the 30-year median
 of the day. This indicator is a sign of general increase of decline of the
 ice extent.
 
+![Monthly Sea Ice Extent Anomaly](doc/monthly_extent.png)
+
+
 ### Seal Coin
 
 Seal Coin (SEAL)'s goal is to raise awareness around the ice extent decline.

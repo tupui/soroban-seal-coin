@@ -28,10 +28,9 @@ dependencies = [
     "pigpio; sys_platform == 'darwin'",
     "RPi.GPIO; sys_platform != 'darwin'",
     "spidev; sys_platform != 'darwin'",  # screen
-    "pillow",
-    "stellar-sdk",
-    "numpy",
-    "pandas",
+    "pillow",  # screen
+    "pandas",  # fetch SII
+    "stellar-sdk",  # call Soroban smart contract
 ]
 
 [project.urls]
