@@ -79,9 +79,9 @@ be available to support the challenges we are facing.
 ## Token supply management
 
 The token lifecycle is handled via a Raspberry Pi. The Pi's responsibilities
-are:
+are to:
 
-1. Getting the daily extent,
+1. Get the daily extent,
 2. Adjust the off-chain supply,
 3. Adjust the on-chain supply (mint/burn token),
 4. Provide a proof-of-reserve.
@@ -89,15 +89,13 @@ are:
 ### Structure
 There are 2 folders:
 
-- *iot*: relates to the client side, Raspberry Pi code.
-- *contract*: the Soroban contract itself.
+- *iot*: Raspberry Pi code for off-chain management,
+- *contract*: Soroban contract for on-chain management.
 
-In each folder, there is a handy Makefile with useful commands. Let's go
+In each folder, there is a handy *Makefile* with useful commands. Let's go
 through the IOT part first, and then we will cover the contract.
 
 ### Raspberry Pi
-
-...
 
 #### Hardware
 
@@ -118,9 +116,9 @@ fluid level.
 [Some](https://www.seeedstudio.com/blog/2019/12/23/distance-sensors-types-and-selection-guide/)
 common options for RPi. Other option with ToF sensor, e.g. VL53L1X or VL6180X_
 
-See `iot/seal_coin_supply.py` for details on which GPIO to connect.
+See `iot/seal_coin_supply.py` for details the GPIO definition.
 
-![Raspberry Pi diagram](doc/diagram.png)
+![Raspberry Pi image](doc/diagram.png)
 
 #### Python service
 
@@ -149,11 +147,14 @@ Behind the scene, once a day, the ice extent is retrieved. Its value is
 used to adjust the supply. As the physical supply of the token is changed,
 a call to the Soroban contract is made to adjust the on-chain supply.
 
+The screen and LED allows to visualize the [on/off]-chain supply, ice extent,
+etc.
+
+![Raspberry Pi screen](doc/screen.png)
+
 ### Soroban - Stellar Smart Contract
 
 We define a Smart Contract that ...
-
-*Note: all commands are listed in a convenient Makefile in the contract folder.*
 
 #### Setup
 These steps are to be done on any machine, not the Pi(s).
@@ -172,7 +173,7 @@ cargo install --locked soroban-cli --features opt
 In the following, we will be using *testnet*. Another option for playing
 around is to use a docker image to run an actual Stellar network locally.
 It's very simple to do as they provide a ready-to-use
-[image](https://hub.docker.com/r/stellar/quickstart).
+[docker image](https://hub.docker.com/r/stellar/quickstart).
 
 ```bash
 soroban config network add --global testnet
@@ -201,8 +202,8 @@ We follow the extensive
 [documentation](https://developers.stellar.org/docs/issuing-assets/how-to-issue-an-asset)
 to issue the new asset on the Stellar blockchain.
 
-At the end of the process, we have an issuing account and a distribution account,
-which hold the 1,000,000,000 Seal Coin (SEAL).
+At the end of the process, we have an issuing account and a distribution
+account, the latter holds the 1,000,000,000 Seal Coin (SEAL).
 
 # What's next!?
 
