@@ -110,9 +110,9 @@ fn correct_supply(env: &Env, issuer: Address, distributor: Address, doy: u32, se
     // -550 * 100 = -55k SEAL
     let amount = delta * 100;
 
-    if amount > 0 {
+    if amount > 1000 {
         client.transfer(&issuer, &distributor, &amount)
-    } else if amount < 0 {
+    } else if amount < -1000 {
         client.burn(&distributor, &amount.abs())
     } else {
     }
