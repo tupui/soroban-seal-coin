@@ -64,7 +64,7 @@ impl SealCoinContract {
         );
 
         // Adjust supply level with given amount
-        correct_supply(&env, issuer, distributor, doy, sea_ice_extent);
+        correct_supply(&env, &issuer, &distributor, &doy, &sea_ice_extent);
     }
 
     /// Reset the contract by deleting the token and coin data.
@@ -90,7 +90,7 @@ fn is_initialized(env: &Env) -> bool {
     env.storage().instance().has(&DataKey::Admin) && env.storage().instance().has(&DataKey::Token)
 }
 
-fn correct_supply(env: &Env, issuer: Address, distributor: Address, doy: u32, sea_ice_extent: u32) {
+fn correct_supply(env: &Env, issuer: &Address, distributor: &Address, doy: &u32, sea_ice_extent: &u32) {
     if !is_initialized(&env) {
         panic!("contract has not been initialized");
     }
@@ -101,7 +101,7 @@ fn correct_supply(env: &Env, issuer: Address, distributor: Address, doy: u32, se
     let client = token::Client::new(&env, &token);
 
     // let ledger_timestamp = env.ledger().timestamp();
-    let doy = doy as usize;
+    let doy = *doy as usize;
     let delta: i128 = (sea_ice_extent - historical_data::MEDIAN_EXTENT[doy - 1]).into();
 
     // convert delta extent to token amount e.g.
