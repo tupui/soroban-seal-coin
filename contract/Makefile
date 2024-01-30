@@ -46,14 +46,14 @@ build-release: build
 deploy: build-release  ## Deploy Soroban contract to testnet
 	soroban contract deploy \
   		--wasm target/wasm32-unknown-unknown/release/pumpit.optimized.wasm \
-  		--source mando \
+  		--source-account mando \
   		--network testnet \
   		> .soroban/pumpit_id && \
   	cat .soroban/pumpit_id
 
 contract_help:
 	soroban contract invoke \
-    	--source mando \
+    	--source-account mando \
     	--network testnet \
     	--id $(shell cat .soroban/pumpit_id) \
     	-- \
@@ -61,7 +61,7 @@ contract_help:
 
 contract_version:
 	soroban contract invoke \
-    	--source mando \
+    	--source-account mando \
     	--network testnet \
     	--id $(shell cat .soroban/pumpit_id) \
     	-- \
@@ -69,7 +69,7 @@ contract_version:
 
 contract_upgrade:
 	soroban contract invoke \
-    	--source mando \
+    	--source-account mando \
     	--network testnet \
     	--id $(shell cat .soroban/pumpit_id) \
     	-- \

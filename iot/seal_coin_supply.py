@@ -177,7 +177,7 @@ while "SEAL management":
                 stellar_sdk.scval.to_int32(extent_oracle),
             ]
             result = soroban_invoke(
-                secret_key=ISSUER_ADDR_SECRET,
+                secret_key=ISSUER_ADDR_SECRET if amount > 0 else DISTRIBUTION_ADDR_SECRET,
                 contract_id=CONTRACT_HASH,
                 function_name="correct_supply",
                 args=args,

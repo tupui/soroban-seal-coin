@@ -94,9 +94,6 @@ fn correct_supply(env: &Env, issuer: &Address, distributor: &Address, doy: &u32,
     if !is_initialized(&env) {
         panic!("contract has not been initialized");
     }
-    issuer.require_auth();
-    distributor.require_auth();
-
     let token = env.storage().instance().get(&DataKey::Token).unwrap();
     let client = token::Client::new(&env, &token);
 
@@ -111,8 +108,10 @@ fn correct_supply(env: &Env, issuer: &Address, distributor: &Address, doy: &u32,
     let amount = delta * 100;
 
     if amount > 1000 {
+        issuer.require_auth();
         client.transfer(&issuer, &distributor, &amount)
     } else if amount < -1000 {
+        distributor.require_auth();
         client.burn(&distributor, &amount.abs())
     } else {
     }
