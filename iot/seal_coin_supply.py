@@ -48,7 +48,7 @@ burn_led = LED(5)  # Red
 mint_led = LED(6)  # Blue
 
 pump = Motor(forward=4, backward=14)
-FLOW_RATE = 0.0015  # l/s
+FLOW_RATE = 1 / (34 * 10)  # l/s  calibration on 100ml
 
 d_sensor = DistanceSensor(23, 24)
 SURFACE_CONTAINER = math.pi * 0.01**2  # m^2
