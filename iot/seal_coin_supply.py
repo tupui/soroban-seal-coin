@@ -52,6 +52,7 @@ FLOW_RATE = 1 / (34 * 10)  # l/s  calibration on 100ml
 
 d_sensor = DistanceSensor(23, 24)
 SURFACE_CONTAINER = math.pi * 0.01**2  # m^2
+LENGTH_CONTAINER = 0.1  # m
 
 
 def token_control(n_token: int, operation: Literal["mint", "burn"]) -> None:
@@ -87,7 +88,7 @@ def supply_offchain() -> int:
         dists.append(d_sensor.distance)
         time.sleep(0.01)
     dist = statistics.median(dists)  # m
-    vol = SURFACE_CONTAINER * dist  # m^3
+    vol = SURFACE_CONTAINER * (LENGTH_CONTAINER - dist)  # m^3
     n_token = math.floor(vol / LITER_PER_TOKEN)
     return n_token
 
