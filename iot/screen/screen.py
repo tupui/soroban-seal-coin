@@ -37,7 +37,7 @@ class SealScreen:
         self.draw.rectangle(((150, 0), (250, 122)), fill=255)
 
         self.draw.text((150, 30), f"Ice Extent: {ice_extent}", fill=0)
-        self.draw.text((150, 45), f"Delta: {delta}%", fill=0)
+        self.draw.text((150, 45), f"Delta: {delta} km^2", fill=0)
 
         self.draw.text((150, 70), "Supply", fill=0)
         self.draw.text((150, 85), f"- On-chain:  {seal_onchain}", fill=0)
