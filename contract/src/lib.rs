@@ -100,8 +100,6 @@ fn correct_supply(
     if !is_initialized(&env) {
         panic!("contract has not been initialized");
     }
-    let token = env.storage().instance().get(&DataKey::Token).unwrap();
-    let client = token::Client::new(&env, &token);
 
     if (doy < &1) || (doy > &366) {
         panic!("doy must be in [1, 366]");
@@ -126,9 +124,17 @@ fn correct_supply(
 
     if amount > 1000 {
         issuer.require_auth();
-        client.transfer(&issuer, &distributor, &amount)
+        let client = token::StellarAssetClient::new(
+            &env,
+            &env.register_stellar_asset_contract(token_address.clone()),
+        );
+        client.mint(&distributor, &amount)
     } else if amount < -1000 {
         distributor.require_auth();
+        let client = token::Client::new(
+            &env,
+            &env.register_stellar_asset_contract(token_address.clone()),
+        );
         client.burn(&distributor, &amount.abs())
     } else {
     }
