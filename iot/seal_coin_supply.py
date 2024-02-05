@@ -35,7 +35,7 @@ stellar_server = stellar_sdk.Server(horizon_url="https://horizon-testnet.stellar
 # SEAL setup
 # 1_000_000_000 SEAL = 1 l
 TOKEN_GENESIS = 1_000_000_000
-LITER_PER_TOKEN = 1e-9
+LITER_PER_TOKEN = 1 / TOKEN_GENESIS
 TOKEN_VOLATILE = 500_000_000
 
 # hardware setup
