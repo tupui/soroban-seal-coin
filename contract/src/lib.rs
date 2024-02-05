@@ -90,12 +90,29 @@ fn is_initialized(env: &Env) -> bool {
     env.storage().instance().has(&DataKey::Admin) && env.storage().instance().has(&DataKey::Token)
 }
 
-fn correct_supply(env: &Env, issuer: &Address, distributor: &Address, doy: &u32, sea_ice_extent: &u32) {
+fn correct_supply(
+    env: &Env,
+    issuer: &Address,
+    distributor: &Address,
+    doy: &u32,
+    sea_ice_extent: &u32,
+) {
     if !is_initialized(&env) {
         panic!("contract has not been initialized");
     }
     let token = env.storage().instance().get(&DataKey::Token).unwrap();
     let client = token::Client::new(&env, &token);
+
+    if (doy < &1) || (doy > &366) {
+        panic!("doy must be in [1, 366]");
+    }
+
+    if (sea_ice_extent < &0) || (sea_ice_extent > &30_000) {
+        // could have a better upper bound
+        panic!("sea_ice_extent must be in [0, 20_000]");
+    }
+
+    let token_address: Address = env.storage().instance().get(&DataKey::Token).unwrap();
 
     // let ledger_timestamp = env.ledger().timestamp();
     let doy = *doy as usize;
