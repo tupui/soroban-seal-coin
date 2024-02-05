@@ -130,14 +130,14 @@ fn correct_supply(
         issuer.require_auth();
         let client = token::StellarAssetClient::new(
             &env,
-            &env.register_stellar_asset_contract(token_address.clone()),
+            &token_address
         );
         client.mint(&distributor, &amount)
     } else if amount < -1000 {
         distributor.require_auth();
         let client = token::Client::new(
             &env,
-            &env.register_stellar_asset_contract(token_address.clone()),
+            &token_address
         );
         client.burn(&distributor, &amount.abs())
     } else {

@@ -13,9 +13,9 @@ fn test() {
     let env = Env::default();
     env.mock_all_auths();
 
-    let distributor = Address::generate(&env);
+    // Create Token
     let issuer = Address::generate(&env);
-    let contract_admin = Address::generate(&env);
+    let distributor = Address::generate(&env);
 
     let token_address = env.register_stellar_asset_contract(issuer.clone());
     let token = TokenClient::new(&env, &token_address);
@@ -25,10 +25,10 @@ fn test() {
     issuer_client.mint(&distributor, &1_000_000_000);
     assert_eq!(token.balance(&distributor), 1_000_000_000);
 
+    let contract_admin = Address::generate(&env);
     let contract_id = env.register_contract(None, SealCoinContract);
     let contract = SealCoinContractClient::new(&env, &contract_id);
-
-    contract.init(&contract_admin, &distributor);
+    contract.init(&contract_admin, &token_address);
 
     // doy 1 -> 13.823
     // 10K diff -> 1M token diff
