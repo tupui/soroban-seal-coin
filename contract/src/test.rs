@@ -33,14 +33,17 @@ fn test() {
     // doy 1 -> 13.823
     // 10K diff -> 1M token diff
     // Mint
-    contract.update_sea_ice_extent(&issuer, &distributor, &1, &23823);
-    assert_eq!(token.balance(&distributor), 1_001_000_000);
+    let delta = 13823 + 100;  // result in +10K
+    contract.update_sea_ice_extent(&issuer, &distributor, &1, &delta);
+    assert_eq!(token.balance(&distributor), 1_000_010_000);
 
     // increment too small <1000
-    contract.update_sea_ice_extent(&issuer, &distributor, &1, &14823);
-    assert_eq!(token.balance(&distributor), 1_001_000_000);
+    let delta = 13823 + 10;  // result in +1K
+    contract.update_sea_ice_extent(&issuer, &distributor, &1, &delta);
+    assert_eq!(token.balance(&distributor), 1_000_010_000);
 
     // Burn
-    contract.update_sea_ice_extent(&issuer, &distributor, &1, &3823);
+    let delta = 13823 - 100; // result in -10K
+    contract.update_sea_ice_extent(&issuer, &distributor, &1, &delta);
     assert_eq!(token.balance(&distributor), 1_000_000_000);
 }

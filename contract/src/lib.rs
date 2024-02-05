@@ -114,13 +114,17 @@ fn correct_supply(
 
     // let ledger_timestamp = env.ledger().timestamp();
     let doy = *doy as usize;
-    let delta: i128 = (sea_ice_extent - historical_data::MEDIAN_EXTENT[doy - 1]).into();
+    let sea_ice_extent = *sea_ice_extent as i32;
+
+    let sea_ice_extent_history = historical_data::MEDIAN_EXTENT[doy - 1];
+    let sea_ice_extent_history = sea_ice_extent_history as i32;
+    let delta: i128 = (sea_ice_extent - sea_ice_extent_history).into();
 
     // convert delta extent to token amount e.g.
     // sea_ice_extent = 13976, MEDIAN_EXTENT = 14526
     // 13976-14526 = -550
     // -550 * 100 = -55k SEAL
-    let amount = delta * 100;
+    let amount: i128 = delta * 100;
 
     if amount > 1000 {
         issuer.require_auth();
