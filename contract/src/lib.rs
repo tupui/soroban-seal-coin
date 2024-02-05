@@ -97,17 +97,17 @@ fn correct_supply(
     doy: &u32,
     sea_ice_extent: &u32,
 ) {
-    if !is_initialized(&env) {
+    if !is_initialized(env) {
         panic!("contract has not been initialized");
     }
 
-    if (doy < &1) || (doy > &366) {
+    if !(1..367).contains(doy) {
         panic!("doy must be in [1, 366]");
     }
 
-    if (sea_ice_extent < &0) || (sea_ice_extent > &30_000) {
+    if !(0..30_001).contains(sea_ice_extent) {
         // could have a better upper bound
-        panic!("sea_ice_extent must be in [0, 20_000]");
+        panic!("sea_ice_extent must be in [0, 30_000]");
     }
 
     let token_address: Address = env.storage().instance().get(&DataKey::Token).unwrap();
@@ -129,18 +129,17 @@ fn correct_supply(
     if amount > 1000 {
         issuer.require_auth();
         let client = token::StellarAssetClient::new(
-            &env,
+            env,
             &token_address
         );
-        client.mint(&distributor, &amount)
+        client.mint(distributor, &amount)
     } else if amount < -1000 {
         distributor.require_auth();
         let client = token::Client::new(
-            &env,
+            env,
             &token_address
         );
-        client.burn(&distributor, &amount.abs())
-    } else {
+        client.burn(distributor, &amount.abs())
     }
 }
 
