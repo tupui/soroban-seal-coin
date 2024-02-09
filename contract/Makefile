@@ -43,7 +43,7 @@ build-release: build
 	soroban contract optimize --wasm target/wasm32-unknown-unknown/release/seal_coin.wasm
 	@ls -l target/wasm32-unknown-unknown/release/*.wasm
 
-deploy: build-release  ## Deploy Soroban contract to testnet
+deploy: test build-release  ## Deploy Soroban contract to testnet
 	soroban contract deploy \
   		--wasm target/wasm32-unknown-unknown/release/seal_coin.optimized.wasm \
   		--source-account issuer \
@@ -67,9 +67,19 @@ contract_version:
     	-- \
     	version
 
-contract_upgrade:
+contract_init:
 	soroban contract invoke \
     	--source-account distribution \
+    	--network testnet \
+    	--id $(shell cat .soroban/seal_coin_id) \
+    	-- \
+    	init \
+    	--admin $(shell soroban config identity address issuer) \
+		--token $(shell soroban lab token id --asset SEAL:$(shell soroban config identity address issuer) --source-account issuer --network testnet) \
+
+contract_upgrade:
+	soroban contract invoke \
+    	--source-account issuer \
     	--network testnet \
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
