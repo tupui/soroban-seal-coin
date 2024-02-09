@@ -69,13 +69,45 @@ contract_version:
 
 contract_init:
 	soroban contract invoke \
-    	--source-account distribution \
+    	--source-account issuer \
     	--network testnet \
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	init \
     	--admin $(shell soroban config identity address issuer) \
 		--token $(shell soroban lab token id --asset SEAL:$(shell soroban config identity address issuer) --source-account issuer --network testnet) \
+
+contract_test_update_sea_ice_extent_mint:
+	soroban contract invoke \
+    	--source-account issuer \
+    	--network testnet \
+    	--id $(shell cat .soroban/seal_coin_id) \
+    	-- \
+    	update_sea_ice_extent \
+    	--issuer $(shell soroban config identity address issuer) \
+    	--distributor $(shell soroban config identity address distribution) \
+    	--doy 1 \
+    	--sea_ice_extent 13923 \
+
+contract_test_update_sea_ice_extent_burn:
+	soroban contract invoke \
+    	--source-account distribution \
+    	--network testnet \
+    	--id $(shell cat .soroban/seal_coin_id) \
+    	-- \
+    	update_sea_ice_extent \
+    	--issuer $(shell soroban config identity address issuer) \
+    	--distributor $(shell soroban config identity address distribution) \
+    	--doy 1 \
+    	--sea_ice_extent 13723 \
+
+contract_reset:
+	soroban contract invoke \
+    	--source-account issuer \
+    	--network testnet \
+    	--id $(shell cat .soroban/seal_coin_id) \
+    	-- \
+    	reset
 
 contract_upgrade:
 	soroban contract invoke \
