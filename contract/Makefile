@@ -20,10 +20,10 @@ prepare:  ## Generate identity and fund
   		--rpc-url https://soroban-testnet.stellar.org:443 \
   		--network-passphrase "Test SDF Network ; September 2015" && \
 	# generate addresses and add funds
-	soroban config identity generate grogu && \
-	soroban config identity generate mando && \
-	soroban config identity fund grogu --network testnet && \
-	soroban config identity fund mando --network testnet && \
+	soroban config identity generate issuer && \
+	soroban config identity generate distribution && \
+	soroban config identity fund issuer --network testnet && \
+	soroban config identity fund distribution --network testnet && \
 	mkdir -p .soroban
 
 fmt:
@@ -40,38 +40,38 @@ test: build
 	cargo test
 
 build-release: build
-	soroban contract optimize --wasm target/wasm32-unknown-unknown/release/pumpit.wasm
+	soroban contract optimize --wasm target/wasm32-unknown-unknown/release/seal_coin.wasm
 	@ls -l target/wasm32-unknown-unknown/release/*.wasm
 
 deploy: build-release  ## Deploy Soroban contract to testnet
 	soroban contract deploy \
-  		--wasm target/wasm32-unknown-unknown/release/pumpit.optimized.wasm \
-  		--source-account mando \
+  		--wasm target/wasm32-unknown-unknown/release/seal_coin.optimized.wasm \
+  		--source-account issuer \
   		--network testnet \
-  		> .soroban/pumpit_id && \
-  	cat .soroban/pumpit_id
+  		> .soroban/seal_coin_id && \
+  	cat .soroban/seal_coin_id
 
 contract_help:
 	soroban contract invoke \
-    	--source-account mando \
+    	--source-account distribution \
     	--network testnet \
-    	--id $(shell cat .soroban/pumpit_id) \
+    	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	--help
 
 contract_version:
 	soroban contract invoke \
-    	--source-account mando \
+    	--source-account distribution \
     	--network testnet \
-    	--id $(shell cat .soroban/pumpit_id) \
+    	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	version
 
 contract_upgrade:
 	soroban contract invoke \
-    	--source-account mando \
+    	--source-account distribution \
     	--network testnet \
-    	--id $(shell cat .soroban/pumpit_id) \
+    	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	upgrade \
-		--new_wasm_hash $(shell soroban contract install --wasm target/wasm32-unknown-unknown/release/pumpit.optimized.wasm)
+		--new_wasm_hash $(shell soroban contract install --wasm target/wasm32-unknown-unknown/release/seal_coin.optimized.wasm)
