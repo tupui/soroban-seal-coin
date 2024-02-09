@@ -3,7 +3,8 @@
 <table align="center" border="0">
 <tr>
 <td><img src="doc/soroban-wordmark-temp.svg" alt="Soroban" width="250"/></td>
-<td><img src="doc/COLOUR-Raspberry-Pi-Symbol-Registered.png" alt="Soroban" width="90"/></td>
+<td><img src="doc/logo.png" alt="Soroban" width="240"/></td>
+<td><img src="doc/COLOUR-Raspberry-Pi-Symbol-Registered.png" alt="Soroban" width="150"/></td>
 </tr>
 </table>
 

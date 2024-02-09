@@ -23,8 +23,10 @@ class SealScreen:
         self.draw.text((110, 60), "SEAL", fill=0)
 
         fdir = pathlib.Path(__file__).parent
-        logo = Image.open(fdir / "soroban.png")
+        logo = Image.open(fdir / "seal.png")
+        logo = logo.convert('L').quantize(colors=2)
         logo.thumbnail((100, 100))
+        logo = logo.convert("1", dither=Image.Dither.NONE)
         self.base_image.paste(logo, (5, 10))
 
         self.epd.display_part_base_image(self.epd.get_buffer(self.base_image))
