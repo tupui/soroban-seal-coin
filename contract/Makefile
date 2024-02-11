@@ -109,11 +109,11 @@ contract_reset:
     	-- \
     	reset
 
-contract_upgrade:
+contract_upgrade: build-release
 	soroban contract invoke \
     	--source-account issuer \
     	--network testnet \
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	upgrade \
-		--new_wasm_hash $(shell soroban contract install --wasm target/wasm32-unknown-unknown/release/seal_coin.optimized.wasm)
+		--new_wasm_hash $(shell soroban contract install --source-account issuer --network testnet --wasm target/wasm32-unknown-unknown/release/seal_coin.optimized.wasm)
