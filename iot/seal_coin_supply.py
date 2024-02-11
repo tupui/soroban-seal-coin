@@ -196,7 +196,7 @@ while "SEAL management":
         seal_onchain=seal_onchain,
         seal_offchain=seal_offchain,
         ice_extent=extent_oracle,
-        delta=delta,
+        delta=delta/1000,
     )
 
     time.sleep(3600)

@@ -36,14 +36,14 @@ class SealScreen:
         self.epd.init()
 
         # blank fill update area
-        self.draw.rectangle(((150, 0), (250, 122)), fill=255)
+        self.draw.rectangle(((140, 0), (250, 122)), fill=255)
 
-        self.draw.text((150, 30), f"Ice Extent: {ice_extent}", fill=0)
-        self.draw.text((150, 45), f"Delta: {delta} km^2", fill=0)
+        self.draw.text((140, 30), f"Ice Extent: {ice_extent}", fill=0)
+        self.draw.text((140, 45), f"Delta: {delta} Mkm^2", fill=0)
 
-        self.draw.text((150, 70), "Supply", fill=0)
-        self.draw.text((150, 85), f"- On-chain:  {seal_onchain}", fill=0)
-        self.draw.text((150, 100), f"- Off-chain:   {seal_offchain}", fill=0)
+        self.draw.text((140, 70), "Supply", fill=0)
+        self.draw.text((140, 85), f"- On-chain:  {seal_onchain:.2e}", fill=0)
+        self.draw.text((140, 100), f"- Off-chain:   {seal_offchain:.2e}", fill=0)
 
         # screen refresh
         self.epd.display_partial(self.epd.get_buffer(self.base_image))
