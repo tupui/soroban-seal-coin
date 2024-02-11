@@ -217,9 +217,9 @@ soroban lab token wrap --asset SEAL:$(soroban config identity address issuer) --
 
 #### Controlling the supply
 
-Now we can control the supply of the token by calling the smart contract's
-function `update_sea_ice_extent`. The following example results in minting
-10K SEAL.
+After the Soroban smart contract is deployed (see makefile), we can can control
+the supply of the token by calling the smart contract's function
+`update_sea_ice_extent`. The following example results in minting 10K SEAL.
 
 ```bash
 soroban contract invoke \
