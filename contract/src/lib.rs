@@ -34,7 +34,7 @@ pub struct SealCoinContract;
 #[contractimpl]
 impl SealCoinContract {
     pub fn version() -> u32 {
-        1
+        2
     }
 
     pub fn init(env: Env, admin: Address, token: Address) {
@@ -124,21 +124,17 @@ fn correct_supply(
     // sea_ice_extent = 13976, MEDIAN_EXTENT = 14526
     // 13976-14526 = -550
     // -550 * 100 = -55k SEAL
-    let amount: i128 = delta * 100;
+    // * 1e7 to go to base unit
+    let amount: i128 = delta * 100 * 10_000_000;
+    let min_amount: i128 = 1000 * 10_000_000;
 
-    if amount > 1000 {
+    if amount > min_amount {
         issuer.require_auth();
-        let client = token::StellarAssetClient::new(
-            env,
-            &token_address
-        );
+        let client = token::StellarAssetClient::new(env, &token_address);
         client.mint(distributor, &amount)
-    } else if amount < -1000 {
+    } else if amount < -min_amount {
         distributor.require_auth();
-        let client = token::Client::new(
-            env,
-            &token_address
-        );
+        let client = token::Client::new(env, &token_address);
         client.burn(distributor, &amount.abs())
     }
 }
