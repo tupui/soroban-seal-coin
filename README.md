@@ -119,7 +119,7 @@ common options for RPi. Other option with ToF sensor, e.g. VL53L1X or VL6180X_
 
 See `iot/seal_coin_supply.py` for details the GPIO definition.
 
-![Raspberry Pi image](doc/diagram.png)
+![Raspberry Pi image](doc/pi_setup.png)
 
 #### Python service
 
