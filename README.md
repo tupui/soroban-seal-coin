@@ -183,17 +183,17 @@ soroban config network add --global testnet
 ```
 
 We create (at least) two accounts on testnet and add some funds (in XLM).
-Here I have `mando` and `grogu`. `mando` will be used as the admin of the
+Here I have `issuer` and `distribution`. `issuer` will be used as the admin of the
 contract, and it will also be the one giving up some of its funds to deposit
 on the contract.
 
 ```bash
 # generate addresses
-soroban config identity generate grogu
-soroban config identity generate mando
+soroban config identity generate issuer
+soroban config identity generate distribution
 # and add funds
-soroban config identity fund grogu --network testnet
-soroban config identity fund mando --network testnet
+soroban config identity fund issuer --network testnet
+soroban config identity fund distribution --network testnet
 mkdir -p .soroban
 ```
 
@@ -205,6 +205,39 @@ to issue the new asset on the Stellar blockchain.
 
 At the end of the process, we have an issuing account and a distribution
 account, the latter holds the 1,000,000,000 Seal Coin (SEAL).
+
+To be able to use a Stellar asset into a contract, it needs to be wrapped into
+a Stellar Asset Contract:
+
+```bash
+soroban lab token wrap --asset SEAL:$(soroban config identity address issuer) --source issuer --network testnet
+```
+
+![SEAL details on-chain](doc/seal_explorer.png)
+
+#### Controlling the supply
+
+Now we can control the supply of the token by calling the smart contract's
+function `update_sea_ice_extent`. The following example results in minting
+10K SEAL.
+
+```bash
+soroban contract invoke \
+	--source-account issuer \
+	--network testnet \
+	--id $(shell cat .soroban/seal_coin_id) \
+	-- \
+	update_sea_ice_extent \
+	--issuer $(shell soroban config identity address issuer) \
+	--distributor $(shell soroban config identity address distribution) \
+	--doy 1 \
+	--sea_ice_extent 13923
+```
+
+![SEAL mint with Soroban smart contract](doc/seal_mint.png)
+
+These functions are not intended to be called directly but rather by the IOT
+device which is controlling the supply.
 
 # What's next!?
 
