@@ -206,11 +206,12 @@ to issue the new asset on the Stellar blockchain.
 At the end of the process, we have an issuing account and a distribution
 account, the latter holds the 1,000,000,000 Seal Coin (SEAL).
 
-To be able to use a Stellar asset into a contract, it needs to be wrapped into
-a Stellar Asset Contract:
+To be able to use a Stellar asset into a contract, a special contract called
+needs a Stellar Asset Contract, needs to be deployed to interact directly with
+the asset on Stellar:
 
 ```bash
-soroban lab token wrap --asset SEAL:$(soroban config identity address issuer) --source issuer --network testnet
+soroban contract asset deploy --asset SEAL:$(soroban config identity address issuer) --network testnet --source-account issuer
 ```
 
 ![SEAL details on-chain](doc/seal_explorer.png)
