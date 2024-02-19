@@ -20,10 +20,10 @@ prepare:  ## Generate identity and fund
   		--rpc-url https://soroban-testnet.stellar.org:443 \
   		--network-passphrase "Test SDF Network ; September 2015" && \
 	# generate addresses and add funds
-	soroban config identity generate issuer && \
-	soroban config identity generate distribution && \
-	soroban config identity fund issuer --network testnet && \
-	soroban config identity fund distribution --network testnet && \
+	soroban keys generate issuer && \
+	soroban keys generate distribution && \
+	soroban keys fund issuer --network testnet && \
+	soroban keys fund distribution --network testnet && \
 	mkdir -p .soroban
 
 fmt:
@@ -74,8 +74,8 @@ contract_init:
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	init \
-    	--admin $(shell soroban config identity address issuer) \
-		--token $(shell soroban lab token id --asset SEAL:$(shell soroban config identity address issuer) --source-account issuer --network testnet) \
+    	--admin $(shell soroban keys address issuer) \
+		--token $(shell soroban lab token id --asset SEAL:$(shell soroban keys address issuer) --source-account issuer --network testnet) \
 
 contract_test_update_sea_ice_extent_mint:
 	soroban contract invoke \
@@ -84,8 +84,8 @@ contract_test_update_sea_ice_extent_mint:
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	update_sea_ice_extent \
-    	--issuer $(shell soroban config identity address issuer) \
-    	--distributor $(shell soroban config identity address distribution) \
+    	--issuer $(shell soroban keys address issuer) \
+    	--distributor $(shell soroban keys address distribution) \
     	--doy 1 \
     	--sea_ice_extent 13923 \
 
@@ -96,8 +96,8 @@ contract_test_update_sea_ice_extent_burn:
     	--id $(shell cat .soroban/seal_coin_id) \
     	-- \
     	update_sea_ice_extent \
-    	--issuer $(shell soroban config identity address issuer) \
-    	--distributor $(shell soroban config identity address distribution) \
+    	--issuer $(shell soroban keys address issuer) \
+    	--distributor $(shell soroban keys address distribution) \
     	--doy 1 \
     	--sea_ice_extent 13723 \
 

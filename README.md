@@ -189,11 +189,11 @@ on the contract.
 
 ```bash
 # generate addresses
-soroban config identity generate issuer
-soroban config identity generate distribution
+soroban keys generate issuer
+soroban keys generate distribution
 # and add funds
-soroban config identity fund issuer --network testnet
-soroban config identity fund distribution --network testnet
+soroban keys fund issuer --network testnet
+soroban keys fund distribution --network testnet
 mkdir -p .soroban
 ```
 
@@ -211,7 +211,7 @@ needs a Stellar Asset Contract, needs to be deployed to interact directly with
 the asset on Stellar:
 
 ```bash
-soroban contract asset deploy --asset SEAL:$(soroban config identity address issuer) --network testnet --source-account issuer
+soroban contract asset deploy --asset SEAL:$(soroban keys address issuer) --network testnet --source-account issuer
 ```
 
 ![SEAL details on-chain](doc/seal_explorer.png)
@@ -229,8 +229,8 @@ soroban contract invoke \
 	--id $(shell cat .soroban/seal_coin_id) \
 	-- \
 	update_sea_ice_extent \
-	--issuer $(shell soroban config identity address issuer) \
-	--distributor $(shell soroban config identity address distribution) \
+	--issuer $(shell soroban keys address issuer) \
+	--distributor $(shell soroban keys address distribution) \
 	--doy 1 \
 	--sea_ice_extent 13923
 ```
