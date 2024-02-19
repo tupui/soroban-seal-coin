@@ -177,7 +177,7 @@ It's very simple to do as they provide a ready-to-use
 [docker image](https://hub.docker.com/r/stellar/quickstart).
 
 ```bash
-soroban config network add --global testnet
+soroban network add --global testnet
 	--rpc-url https://soroban-testnet.stellar.org:443
 	--network-passphrase "Test SDF Network ; September 2015"
 ```

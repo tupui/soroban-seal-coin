@@ -16,7 +16,7 @@ install:  ## install Rust and Soroban-CLI
 	cargo install --locked soroban-cli --features opt && \
 
 prepare:  ## Generate identity and fund
-	soroban config network add --global testnet \
+	soroban network add --global testnet \
   		--rpc-url https://soroban-testnet.stellar.org:443 \
   		--network-passphrase "Test SDF Network ; September 2015" && \
 	# generate addresses and add funds
