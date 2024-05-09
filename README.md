@@ -155,8 +155,6 @@ etc.
 
 ### Soroban - Stellar Smart Contract
 
-We define a Smart Contract that ...
-
 #### Setup
 These steps are to be done on any machine, not the Pi(s).
 
